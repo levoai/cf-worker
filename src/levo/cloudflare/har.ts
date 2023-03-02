@@ -8,7 +8,7 @@ export interface Metadata {
 }
 
 // Build a HAR object from Cloudflare Worker Request Response objects
-export const export_har = async (request: Request, response: Response, metadata?: Metadata) => {
+export const buildHarFromRequestResponse = async (request: Request, response: Response, metadata?: Metadata) => {
   const request_cookies = parse(request.headers.get("Cookie") || "");
   const response_cookies = response.headers.getAll("Set-Cookie").map(value => parse(value));
   const request_headers: Header[] = [];
@@ -107,4 +107,10 @@ export const export_har = async (request: Request, response: Response, metadata?
     },
   };
   return har;
+}
+
+// Only report request/response pairs when response content type is application/json
+export const shouldSendToLevo = (request: Request, response: Response) => {
+  const contentType = response.headers.get("Content-Type") || "";
+  return contentType.toLowerCase().includes("application/json");
 }
