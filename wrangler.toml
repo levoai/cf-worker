@@ -3,6 +3,6 @@ name = "levo-cf-worker"
 compatibility_date = "2022-07-26"
 
 # The necessary secrets are:
-# - LEVO_AUTH_KEY
+# - LEVO_ORG_ID
 # - LEVO_SATELLITE_URL
 # Run `echo <VALUE> | wrangler secret put <NAME>` for each of these

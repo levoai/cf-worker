@@ -17,7 +17,7 @@ To deploy the worker using [Wrangler](https://github.com/cloudflare/wrangler) pl
 
 This worker will require two secrets variables that you can setup in the dashboard:
 
-`LEVO_AUTH_KEY`
+`LEVO_ORG_ID`
 `LEVO_SATELLITE_URL`
 
 ### Configure secrets in CloudFlare dashboard
