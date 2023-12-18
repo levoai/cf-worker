@@ -1,7 +1,7 @@
 {
-	"name": "worker-typescript-template",
+	"name": "levo-cf-worker",
 	"version": "1.0.0",
-	"description": "Cloudflare worker TypeScript template",
+	"description": "Levo.ai Cloudflare Worker",
 	"scripts": {
 		"dev": "npx wrangler dev",
 		"publish": "npx wrangler publish",
