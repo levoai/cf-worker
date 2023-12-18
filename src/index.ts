@@ -58,7 +58,7 @@ async function sendToLevo(
 	}1.0/har`;
 	const harLog = await buildHarFromRequestResponse(
 		request,
-		response,
+		response.clone(),
 	);
 	const levo_request = new Request(levo_url, {
 		method: "POST",
