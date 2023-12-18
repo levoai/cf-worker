@@ -11,14 +11,14 @@ In order to deploy using `https://deploy.workers.cloudflare.com` you'll need to 
 
 To deploy the worker using [Wrangler](https://github.com/cloudflare/wrangler) please fork this repository and run after setting Wrangler up:
 
-`wrangler publish`
+`wrangler deploy`
 
 ## Configuration
 
 This worker will require two secrets variables that you can setup in the dashboard:
 
-`LEVO_ORG_ID`
-`LEVO_SATELLITE_URL`
+* `LEVO_ORG_ID`
+* `LEVO_SATELLITE_URL`
 
 ### Configure secrets in CloudFlare dashboard
 
