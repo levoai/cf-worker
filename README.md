@@ -1,4 +1,4 @@
-# Levo AI CloudFlare Worker
+# Levo CloudFlare Worker
 
 ## Deploy using CloudFlare deploy
 
@@ -15,23 +15,42 @@ To deploy the worker using [Wrangler](https://github.com/cloudflare/wrangler) pl
 
 ## Configuration
 
-This worker will require two secrets variables that you can setup in the dashboard:
+### Secrets
+
+This worker requires a secret variable that you must setup:
 
 * `LEVO_ORG_ID`
-* `LEVO_SATELLITE_URL`
 
-### Configure secrets in CloudFlare dashboard
+You can obtain your organization ID by navigating to https://app.levo.ai/settings/organizations.
 
-For configureing this variables in the dashboard go to the `levo-cf-worker` worker and then navigate to `Settings > Variables > Edit Variables`. Once there create a new variable setting name and value and then click on `Encrypt`.
+#### Configure secrets in Cloudflare dashboard
 
-This changes will be applied automatically next time the worker handles a new request.
+Go to the `levo-cf-worker` worker and then navigate to `Settings > Variables > Edit Variables`.
+Once there, create a new variable with a name and value and click on `Encrypt`.
 
+This change will be applied automatically next time the worker handles a new request.
 
-## Configure secrets using Wrangler
+#### Configure secrets using Wrangler
 
 If you are forking the repository and publishing using Wrangler you can run the following command to set the secrets:
 
-`echo <VALUE> | wrangler secrets put <SECRET_NAME>`
+`echo <VALUE> | wrangler secret put LEVO_ORG_ID`
+
+### Variables
+
+You may optionally configure the following variables:
+
+* `LEVO_ENV`: The environment that the app belongs to (e.g. `dev`, `prod`, etc). The default is `staging`.
+* `LEVO_SATELLITE_URL`: The URL of a satellite that traces are sent to. The default is `https://collector.levo.ai`.
+
+#### Configure variables in Cloudflare dashboard
+
+Go to the `levo-cf-worker` worker and then navigate to `Settings > Variables > Edit Variables`.
+Once there, create a new variable with a name and value.
+
+#### Configure secrets using Wrangler
+
+Add the variables as `KEY=VALUE` pairs under `[vars]` in `wrangler.toml`, and run `wrangler deploy`.
 
 ## Issues
 

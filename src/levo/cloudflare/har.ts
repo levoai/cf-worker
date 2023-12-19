@@ -1,16 +1,28 @@
 import { Cookie, Har, Header } from "har-format";
 import { parse } from "cookie";
 
-export interface Metadata {
+export interface HarMetadata {
 	startedDateTime?: string;
 	time?: number;
+	levoHarResource?: LevoHarResource;
+}
+
+export interface LevoHarResource {
+	levoEnv?: string;
+	sensorType?: string;
+	hostname?: string;
+	sensorVersion?: string;
+}
+
+export interface LevoHar extends Har {
+	_levoResource?: LevoHarResource;
 }
 
 // Build a HAR object from Cloudflare Worker Request Response objects
 export const buildHarFromRequestResponse = async (
 	request: Request,
 	response: Response,
-	metadata?: Metadata
+	metadata?: HarMetadata
 ) => {
 	const request_cookies = parse(request.headers.get("Cookie") || "");
 	const response_cookies = response.headers
@@ -30,12 +42,13 @@ export const buildHarFromRequestResponse = async (
 			value,
 		});
 	}
-	const har: Har = {
+	const har: LevoHar = {
+		_levoResource: metadata?.levoHarResource,
 		log: {
 			version: "1.2",
 			creator: {
-				name: "Levo",
-				version: "0.0.1",
+				name: "Levo Cloudflare Worker",
+				version: metadata?.levoHarResource?.sensorVersion || "0.0.0-unknown",
 			},
 			pages: [
 				{
@@ -55,7 +68,7 @@ export const buildHarFromRequestResponse = async (
 					request: {
 						method: request.method,
 						url: request.url.split("?")[0],
-						httpVersion: "HTTP/1.1",
+						httpVersion: request.cf?.httpProtocol || "HTTP/1.1",
 						cookies: Object.entries(request_cookies).map(([name, value]) => {
 							return {
 								name,

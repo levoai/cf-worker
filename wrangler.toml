@@ -2,7 +2,12 @@ main = "./src/index.ts"
 name = "levo-cf-worker"
 compatibility_date = "2022-07-26"
 
-# The necessary secrets are:
-# - LEVO_ORG_ID
-# - LEVO_SATELLITE_URL
-# Run `echo <VALUE> | wrangler secret put <NAME>` for each of these
+[vars]
+LEVO_ENV = "staging"
+LEVO_SATELLITE_URL = "https://collector.levo.ai"
+
+# The following variable is recommended to be added as a secret:
+#
+# LEVO_ORG_ID
+#
+# Run `echo <VALUE> | wrangler secret put LEVO_ORG_ID` to add it.

@@ -9,6 +9,7 @@
  */
 
 import {
+	HarMetadata,
 	buildHarFromRequestResponse,
 	shouldSendToLevo,
 } from "./levo/cloudflare/har";
@@ -17,6 +18,7 @@ export interface Env {
 	// environment variables
 	LEVO_ORG_ID?: string;
 	LEVO_SATELLITE_URL?: string;
+	LEVO_ENV?: string;
 }
 
 export default {
@@ -56,13 +58,22 @@ async function sendToLevo(
 			? ""
 			: "/"
 	}1.0/har`;
-	const harLog = await buildHarFromRequestResponse(
+	const metadata: HarMetadata = {
+		levoHarResource: {
+			levoEnv: env.LEVO_ENV,
+			sensorType: "cloudflare_worker",
+			sensorVersion: "1.1.0", // TODO: Get from package.json
+			hostname: new URL(request.url).hostname,
+		},
+	};
+	const har_log = await buildHarFromRequestResponse(
 		request,
 		response.clone(),
+		metadata
 	);
 	const levo_request = new Request(levo_url, {
 		method: "POST",
-		body: JSON.stringify(harLog),
+		body: JSON.stringify(har_log),
 		headers: {
 			"Content-Type": "application/json",
 			"x-levo-organization-id": env.LEVO_ORG_ID,
