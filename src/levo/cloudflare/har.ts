@@ -67,7 +67,7 @@ export const buildHarFromRequestResponse = async (
 					pageref: "page_1",
 					request: {
 						method: request.method,
-						url: request.url.split("?")[0],
+						url: request.url,
 						httpVersion: request.cf?.httpProtocol || "HTTP/1.1",
 						cookies: Object.entries(request_cookies).map(([name, value]) => {
 							return {

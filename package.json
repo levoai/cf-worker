@@ -1,6 +1,6 @@
 {
 	"name": "levo-cf-worker",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"description": "Levo Cloudflare Worker",
 	"scripts": {
 		"dev": "npx wrangler dev",
