@@ -1,5 +1,5 @@
 main = "./src/index.ts"
-name = "levo-cf-worker"
+name = "levo-cf-worker-with-securehttp"
 compatibility_date = "2022-07-26"
 
 [vars]

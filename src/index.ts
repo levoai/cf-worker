@@ -14,6 +14,8 @@ import {
 	shouldSendToLevo,
 } from "./levo/cloudflare/har";
 
+import fetchWithSecureHttpHeaders from "./securehttp";
+
 export interface Env {
 	// environment variables
 	LEVO_ORG_ID?: string;
@@ -28,7 +30,7 @@ export default {
 		ctx: ExecutionContext
 	): Promise<Response> {
 		// Forward / Proxy original request
-		const response = await fetch(request);
+		const response = await fetchWithSecureHttpHeaders(request);
 		// Send to Levo, NOTE: Does NOT block / wait
 		ctx.waitUntil(sendToLevo(request, response, env));
 		// Done
