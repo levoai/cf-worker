@@ -42,6 +42,7 @@ async function sendToLevo(
 	env: Env
 ): Promise<void> {
 	if (!shouldSendToLevo(request, response)) {
+		console.log("Skipping sending the request to Levo because the response does not have the application/json content-type.");
 		return;
 	}
 	// TODO: Check if we need the following checks
@@ -71,6 +72,7 @@ async function sendToLevo(
 		response.clone(),
 		metadata
 	);
+	console.log("Sending HAR to Levo", har_log);
 	const levo_request = new Request(levo_url, {
 		method: "POST",
 		body: JSON.stringify(har_log),
