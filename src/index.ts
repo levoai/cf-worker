@@ -42,6 +42,7 @@ async function sendToLevo(
 	env: Env
 ): Promise<void> {
 	if (!shouldSendToLevo(request, response)) {
+		console.debug(`Skipping sending traces for URL ${request.url} to Levo.`);
 		return;
 	}
 	// TODO: Check if we need the following checks
@@ -62,7 +63,7 @@ async function sendToLevo(
 		levoHarResource: {
 			levoEnv: env.LEVO_ENV,
 			sensorType: "cloudflare_worker",
-			sensorVersion: "1.1.0", // TODO: Get from package.json
+			sensorVersion: "1.2.0", // TODO: Get from package.json
 			hostname: new URL(request.url).hostname,
 		},
 	};
