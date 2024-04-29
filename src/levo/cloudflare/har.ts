@@ -132,8 +132,26 @@ export const buildHarFromRequestResponse = async (
 	return har;
 };
 
-// Only report request/response pairs when response content type is application/json
+
+const supportedMimeTypes = [
+	"application/json",
+	"application/ld+json",
+	"text/json",
+	"application/x-www-form-urlencoded",
+	"application/grpc",
+	"multipart/form-data",
+	"application/xml",
+	"text/xml",
+	"text/plain",
+]
+// Only report request/response pairs for supported response MIME types
 export const shouldSendToLevo = (request: Request, response: Response) => {
-	const contentType = response.headers.get("Content-Type") || "";
-	return contentType.toLowerCase().includes("application/json");
+	const contentType = response.headers.get("Content-Type")?.toLowerCase();
+	if (!contentType) {
+		console.debug(`The response from the server for the URL "${request.url}" `
+			+ "was missing the Content-Type header or it had an empty value. "
+			+ "Sending to Levo anyway since it might be an API endpoint.");
+		return true;
+	}
+	return supportedMimeTypes.some(t => contentType.includes(t));
 };
