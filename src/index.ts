@@ -41,10 +41,6 @@ async function sendToLevo(
 	response: Response,
 	env: Env
 ): Promise<void> {
-	if (!shouldSendToLevo(request, response)) {
-		console.debug(`Skipping sending traces for URL ${request.url} to Levo.`);
-		return;
-	}
 	// TODO: Check if we need the following checks
 	if (!env.LEVO_ORG_ID) {
 		console.warn("LEVO_ORG_ID not set, skipping");
