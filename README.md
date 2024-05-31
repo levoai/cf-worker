@@ -1,5 +1,8 @@
 # Levo CloudFlare Worker
 
+> [!TIP]
+> Find the up-to-date installation instructions at https://docs.levo.ai/install-traffic-capture-sensors/cloudflare-worker.
+
 ## Deploy using CloudFlare deploy
 
 In order to deploy using `https://deploy.workers.cloudflare.com` you'll need to follow the steps provided after clicking the following button linking your github account and forking this repository.
