@@ -76,16 +76,19 @@ export const buildHarFromRequestResponse = async (
 							} as Cookie;
 						}),
 						headers: request_headers,
-
-						queryString: (request.url.split("?")[1] || "")
-							.split("&")
-							.map((queryParam) => {
-								const [name, value] = queryParam.split("=");
-								return {
-									name,
-									value,
-								};
-							}),
+						queryString:
+							request.url.includes("?") && !request.url.endsWith("?")
+								? request.url
+										.split("?")[1]
+										.split("&")
+										.map((queryParam) => {
+											const [name, value] = queryParam.split("=");
+											return {
+												name,
+												value,
+											};
+										})
+								: [],
 						headersSize: -1,
 						bodySize: parseInt(request.headers.get("Content-Length") || "-1"),
 					},
@@ -132,7 +135,6 @@ export const buildHarFromRequestResponse = async (
 	return har;
 };
 
-
 const supportedMimeTypes = [
 	"application/json",
 	"application/ld+json",
@@ -143,15 +145,17 @@ const supportedMimeTypes = [
 	"application/xml",
 	"text/xml",
 	"text/plain",
-]
+];
 // Only report request/response pairs for supported response MIME types
 export const shouldSendToLevo = (request: Request, response: Response) => {
 	const contentType = response.headers.get("Content-Type")?.toLowerCase();
 	if (!contentType) {
-		console.debug(`The response from the server for the URL "${request.url}" `
-			+ "was missing the Content-Type header or it had an empty value. "
-			+ "Sending to Levo anyway since it might be an API endpoint.");
+		console.debug(
+			`The response from the server for the URL "${request.url}" ` +
+				"was missing the Content-Type header or it had an empty value. " +
+				"Sending to Levo anyway since it might be an API endpoint."
+		);
 		return true;
 	}
-	return supportedMimeTypes.some(t => contentType.includes(t));
+	return supportedMimeTypes.some((t) => contentType.includes(t));
 };
