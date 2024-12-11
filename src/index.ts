@@ -74,23 +74,13 @@ async function sendToLevo(
 		metadata
 	);
 	// Parse additional headers from environment variable
-	const additionalHeaders: Record<string, string> = {};
+	let additionalHeaders: Record<string, string> = {};
 	if (env.LEVO_ADDITIONAL_HEADERS) {
 		try {
-			const headersArray = env.LEVO_ADDITIONAL_HEADERS.split(",");
-			headersArray.forEach((header) => {
-				const [key, value] = header.split("=").map((item) => item.trim());
-				if (key && value) {
-					additionalHeaders[key] = value;
-				} else {
-					console.warn(
-						`Invalid header format in LEVO_ADDITIONAL_HEADERS: '${header}', skipping`
-					);
-				}
-			});
+			additionalHeaders = JSON.parse(env.LEVO_ADDITIONAL_HEADERS);
 		} catch (error) {
 			console.warn(
-				"LEVO_ADDITIONAL_HEADERS could not be parsed, skipping additional headers"
+				"LEVO_ADDITIONAL_HEADERS could not be parsed as JSON, skipping additional headers"
 			);
 		}
 	}
