@@ -19,6 +19,7 @@ export interface Env {
 	LEVO_ORG_ID?: string;
 	LEVO_SATELLITE_URL?: string;
 	LEVO_ENV?: string;
+	LEVO_ADDITIONAL_HEADERS?: string;
 }
 
 export default {
@@ -72,12 +73,35 @@ async function sendToLevo(
 		response.clone(),
 		metadata
 	);
+	// Parse additional headers from environment variable
+	const additionalHeaders: Record<string, string> = {};
+	if (env.LEVO_ADDITIONAL_HEADERS) {
+		try {
+			const headersArray = env.LEVO_ADDITIONAL_HEADERS.split(",");
+			headersArray.forEach((header) => {
+				const [key, value] = header.split("=").map((item) => item.trim());
+				if (key && value) {
+					additionalHeaders[key] = value;
+				} else {
+					console.warn(
+						`Invalid header format in LEVO_ADDITIONAL_HEADERS: '${header}', skipping`
+					);
+				}
+			});
+		} catch (error) {
+			console.warn(
+				"LEVO_ADDITIONAL_HEADERS could not be parsed, skipping additional headers"
+			);
+		}
+	}
+
 	const levo_request = new Request(levo_url, {
 		method: "POST",
 		body: JSON.stringify(har_log),
 		headers: {
 			"Content-Type": "application/json",
 			"x-levo-organization-id": env.LEVO_ORG_ID,
+			...additionalHeaders,
 		},
 	});
 	const levo_response = await fetch(levo_request);
