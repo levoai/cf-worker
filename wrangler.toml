@@ -5,7 +5,7 @@ compatibility_date = "2022-07-26"
 [vars]
 LEVO_ENV = "staging"
 LEVO_SATELLITE_URL = "https://collector.levo.ai"
-LEVO_ADDITIONAL_HEADERS = ""
+LEVO_ADDITIONAL_HEADERS = "{}"
 
 # The following variable is recommended to be added as a secret:
 #

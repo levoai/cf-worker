@@ -45,8 +45,8 @@ You may optionally configure the following variables:
 
 * `LEVO_ENV`: The environment that the app belongs to (e.g. `dev`, `prod`, etc). The default is `staging`.
 * `LEVO_SATELLITE_URL`: The URL of a satellite that traces are sent to. The default is `https://collector.levo.ai`.
-* `LEVO_ADDITIONAL_HEADERS`: Additional headers to be sent with the request to the satellite. The default is an empty string.
-  - Example: LEVO_ADDITIONAL_HEADERS='X-Custom-Header1=Value1, X-Custom-Header2=Value2'
+* `LEVO_ADDITIONAL_HEADERS`: Additional headers to be sent with the request to the satellite. The default is an empty json string "{}".
+  - Example: LEVO_ADDITIONAL_HEADERS='{ "X-Custom-Header1": "Value1", "X-Custom-Header2": "Value2" }'
 
 #### Configure variables in Cloudflare dashboard
 
