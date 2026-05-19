@@ -6,6 +6,8 @@ compatibility_date = "2022-07-26"
 LEVO_ENV = "staging"
 LEVO_SATELLITE_URL = "https://collector.levo.ai"
 LEVO_ADDITIONAL_HEADERS = "{}"
+LEVO_SAMPLE_RATE = "1"
+LEVO_ADDITIONAL_CONTENT_TYPES = ""
 
 # The following variable is recommended to be added as a secret:
 #
