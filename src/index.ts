@@ -20,6 +20,8 @@ export interface Env {
 	LEVO_SATELLITE_URL?: string;
 	LEVO_ENV?: string;
 	LEVO_ADDITIONAL_HEADERS?: string;
+	LEVO_SAMPLE_RATE?: string;
+	LEVO_ADDITIONAL_CONTENT_TYPES?: string;
 }
 
 export default {
@@ -28,10 +30,17 @@ export default {
 		env: Env,
 		ctx: ExecutionContext
 	): Promise<Response> {
+		// Sampling: skip processing entirely if request is not sampled
+		const sampleRate = parseFloat(env.LEVO_SAMPLE_RATE || "1");
+		if (isNaN(sampleRate) || Math.random() >= sampleRate) {
+			return fetch(request);
+		}
+		// Clone before fetch so the body is available for sendToLevo
+		const requestClone = request.clone();
 		// Forward / Proxy original request
 		const response = await fetch(request);
 		// Send to Levo, NOTE: Does NOT block / wait
-		ctx.waitUntil(sendToLevo(request, response, env));
+		ctx.waitUntil(sendToLevo(requestClone, response, env));
 		// Done
 		return response;
 	},
@@ -42,7 +51,12 @@ async function sendToLevo(
 	response: Response,
 	env: Env
 ): Promise<void> {
-	if (!shouldSendToLevo(request, response)) {
+	const additionalContentTypes = env.LEVO_ADDITIONAL_CONTENT_TYPES
+		? env.LEVO_ADDITIONAL_CONTENT_TYPES.split(",")
+				.map((t) => t.trim())
+				.filter(Boolean)
+		: [];
+	if (!shouldSendToLevo(request, response, additionalContentTypes)) {
 		console.debug(`Skipping sending traces for URL ${request.url} to Levo.`);
 		return;
 	}

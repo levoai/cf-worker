@@ -18,12 +18,17 @@ export interface LevoHar extends Har {
 	_levoResource?: LevoHarResource;
 }
 
+const BODY_METHODS = new Set(["POST", "PUT", "PATCH"]);
+
 // Build a HAR object from Cloudflare Worker Request Response objects
 export const buildHarFromRequestResponse = async (
 	request: Request,
 	response: Response,
 	metadata?: HarMetadata
 ) => {
+	const requestBodyText = BODY_METHODS.has(request.method)
+		? await request.text()
+		: undefined;
 	const request_cookies = parse(request.headers.get("Cookie") || "");
 	const response_cookies = response.headers
 		.getAll("Set-Cookie")
@@ -91,6 +96,12 @@ export const buildHarFromRequestResponse = async (
 								: [],
 						headersSize: -1,
 						bodySize: parseInt(request.headers.get("Content-Length") || "-1"),
+						...(requestBodyText !== undefined && {
+							postData: {
+								mimeType: request.headers.get("Content-Type") || "",
+								text: requestBodyText,
+							},
+						}),
 					},
 					response: {
 						status: response.status,
@@ -147,7 +158,11 @@ const supportedMimeTypes = [
 	"text/plain",
 ];
 // Only report request/response pairs for supported response MIME types
-export const shouldSendToLevo = (request: Request, response: Response) => {
+export const shouldSendToLevo = (
+	request: Request,
+	response: Response,
+	additionalContentTypes: string[] = []
+) => {
 	const contentType = response.headers.get("Content-Type")?.toLowerCase();
 	if (!contentType) {
 		console.debug(
@@ -157,5 +172,6 @@ export const shouldSendToLevo = (request: Request, response: Response) => {
 		);
 		return true;
 	}
-	return supportedMimeTypes.some((t) => contentType.includes(t));
+	const allTypes = [...supportedMimeTypes, ...additionalContentTypes];
+	return allTypes.some((t) => contentType.includes(t.toLowerCase()));
 };
